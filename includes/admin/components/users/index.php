@@ -22,7 +22,17 @@ function wsl_component_users()
 
 	include "wsl.components.users.list.php";
 	include "wsl.components.users.profile.php";
-
+	
+	//added
+	if( isset( $_REQUEST["uid"] ) && $_REQUEST["uid"] && $_REQUEST["unlink"]  ){
+		$user_id = (int) $_REQUEST["uid"];
+		$provider = $_REQUEST["unlink"];
+	//	echo $provider . $user_id;
+		wsl_unlink_user_provider( $provider , $user_id );
+	//	echo 'Removed ' . $provider . ' Account for user ' . $user_id;
+		return;
+	}
+	//end add
 	if( isset( $_REQUEST["uid"] ) && $_REQUEST["uid"] ){
 		$user_id = (int) $_REQUEST["uid"];
 

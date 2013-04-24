@@ -35,12 +35,18 @@ function wsl_component_users_profile( $user_id )
 	<p>
 		<a class="button button-secondary" href="user-edit.php?user_id=<?php echo $user_id ?>">Edit User</a>
 		<a class="button button-secondary" href="options-general.php?page=wordpress-social-login&wslp=contacts&uid=<?php echo $user_id ?>">Show User Contacts List</a>
+		
 	</p>
 	<hr />
 	<?php
 	foreach( $linked_accounts AS $link ){
-		?>
+		
+			$provider = $link->provider;
+			$user_id = $link->user_id;
+
+?>			
 			<h3><?php _wsl_e("User Profile", 'wordpress-social-login'); ?> <small><?php echo sprintf( _wsl__( "as provided by %s", 'wordpress-social-login'), $link->provider ); ?> </small></h3> 
+			<a class="button button-secondary" href="options-general.php?page=wordpress-social-login&wslp=users&unlink=<?php echo $provider ?>&uid=<?php echo $user_id ?>"><?php echo 'Unlink ' . $provider . ' Account' ?></a><?php echo //added ?>
 
 			<table class="form-table"
 				<tr><th><label><?php echo $link->provider; ?> Identifier </label></th><td><?php echo $link->identifier 	; ?> <br /><span class="description">The Unique user's ID. Can be an interger for some providers, Email, URL, etc.</span></td></tr>
@@ -75,3 +81,5 @@ function wsl_component_users_profile( $user_id )
 }
 
 // --------------------------------------------------------------------	
+
+

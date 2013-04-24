@@ -89,9 +89,9 @@ function wsl_component_users_list()
 						</td>
 						<td><?php echo wsl_get_user_by_meta_key_and_user_id( "last_name", $user_id) ?> <?php echo wsl_get_user_by_meta_key_and_user_id( "first_name", $user_id) ?></td>
 						<td>
-							<?php $user_wsl_email = wsl_get_user_data_by_user_id( "user_wsl_email", $user_id); if( $user_wsl_email ) { ?>
-								<?php if( ! strstr( $user_wsl_email, "@example.com" ) ) { ?>
-									<a href="mailto:<?php echo $user_wsl_email ?>"><?php echo $user_wsl_email ?></a>
+							<?php $user_email = wsl_get_user_data_by_user_id( "user_email", $user_id); if( $user_email ) { ?>
+								<?php if( ! strstr( $user_email, "@example.com" ) ) { ?>
+									<a href="mailto:<?php echo $user_email ?>"><?php echo $user_email ?></a>
 								<?php } else { ?>
 									-
 								<?php } ?>
@@ -120,6 +120,7 @@ function wsl_component_users_list()
 						<td>
 							<a class="button button-secondary" href="options-general.php?page=wordpress-social-login&wslp=users&uid=<?php echo $user_id ?>">Profile</a>
 							<a class="button button-secondary" href="options-general.php?page=wordpress-social-login&wslp=contacts&uid=<?php echo $user_id ?>">Contacts</a>
+							<a class="unlink-account" href="options-general.php?page=wordpress-social-login&wslp=users&unlink=<?php echo $provider ?>&uid=<?php echo $user_id ?>"><?php echo 'Unlink ' . $provider . ' Account' ?></a><?php //added ?>
 						</td> 
 					</tr> 
 			<?php 
@@ -135,3 +136,37 @@ function wsl_component_users_list()
 }
 
 // --------------------------------------------------------------------	
+
+
+	function wsl_unlink_user_provider($provider, $user_id)
+{		
+	global $current_user;
+	get_currentuserinfo();
+	$user_id_executing_command = $current_user->ID;
+	
+		//echo 'Your ID is currently ' . $user_id_executing_command;
+		if ( $user_id == $user_id_executing_command || is_admin ){
+		//deleting own account then it's OK
+		// probably needs more security
+		global $wpdb;
+		
+		
+		$sql = "DELETE FROM `{$wpdb->prefix}wslusersprofiles` where provider = '$provider' AND  user_id = '$user_id'";
+		//		echo $sql;
+		$wpdb->query( $sql );
+		//wsl_render_notices_pages( 'Successfullyremovedyour $provideraccount . ' );
+		delete_user_meta ( $user_id, 'wsl_user'       , null );
+		delete_user_meta ( $user_id, 'wsl_user_gender', null );
+		delete_user_meta ( $user_id, 'wsl_user_age'   , null );
+		delete_user_meta ( $user_id, 'wsl_user_image' , null );
+		//		echo 'Removed ' . $provider . ' Account for user ' . $user_id;
+		 wp_redirect(get_bloginfo('url').'/wp-admin/options-general.php?page=wordpress-social-login&wslp=users');
+			echo "<div class='updated'>'Account successfully unlinked';</div>";
+		}
+		else{
+				echo "<div class='updated'>'You do not have permission to unlink this account!';</div>";
+		}
+}
+
+// --------------------------------------------------------------------	
+
