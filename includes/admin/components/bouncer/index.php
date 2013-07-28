@@ -23,7 +23,9 @@ function wsl_component_bouncer()
 	include "wsl.components.bouncer.setup.php";
 	include "wsl.components.bouncer.sidebar.php";
 
-	wsl_admin_welcome_panel();
+	$wslp = 'bouncer'; // temp fix
+	
+	wsl_admin_welcome_panel($wslp);
 ?>
 <form method="post" id="wsl_setup_form" action="options.php"> 
 	<?php settings_fields( 'wsl-settings-group-bouncer' ); ?> 

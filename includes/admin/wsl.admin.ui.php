@@ -60,9 +60,9 @@ function wsl_admin_init()
 	$wslp            = "networks";
 	$wsldwp          = 0;
 	$assets_base_url = WORDPRESS_SOCIAL_LOGIN_PLUGIN_URL . '/assets/img/16x16/';
-
+				
 	if( isset( $_REQUEST["wslp"] ) ){
-		$wslp = trim( strtolower( strip_tags( $_REQUEST["wslp"] ) ) );
+		$wslp = trim( strtolower( strip_tags( $_REQUEST["wslp"] ) ) );				
 	}
 
 	if( isset( $WORDPRESS_SOCIAL_LOGIN_ADMIN_TABS[$wslp] ) && $WORDPRESS_SOCIAL_LOGIN_ADMIN_TABS[$wslp]["enabled"] ){
@@ -82,11 +82,11 @@ function wsl_admin_init()
 			wsl_admin_ui_footer();
 		}
 	}
-	else{
+	else{				
 		wsl_admin_ui_header();
 
 		wsl_admin_ui_error();
-	}
+		}	
 	
 	// HOOKABLE: 
 	do_action( "wsl_admin_init_end" );
@@ -539,20 +539,26 @@ ul {
 /**
 * Renders wsl admin welcome panel
 */
-function wsl_admin_welcome_panel()
-{
+function wsl_admin_welcome_panel($wslp)
+{	
+	if(( isset( $wslp )) ) {
+		
 	if( isset( $_REQUEST["wsldwp"] ) && (int) $_REQUEST["wsldwp"] ){
 		$wsldwp = (int) $_REQUEST["wsldwp"];
+		
+		if ($wsldwp === 2) {
+		// Enable
+		update_option( 'wsl_settings_welcome_panel_enabled', null );
+		//return;
+		}
+		if ($wsldwp === 1) {
+		// Disable
+		update_option( 'wsl_settings_welcome_panel_enabled', wsl_version() );		
+		//return;
+			}
+		}
 
-		update_option( "wsl_settings_welcome_panel_enabled", wsl_version() );
-
-		return;
-	}
-
-	// if new user or wsl updated, then we display wsl welcome panel
-	if( get_option( 'wsl_settings_welcome_panel_enabled' ) == wsl_version() ){ 
-		return;
-	}
+	}	
 ?> 
 <!-- 
 	if you want to know if a UI was made by devloper, then here is a tip: he will always use tables
@@ -560,7 +566,21 @@ function wsl_admin_welcome_panel()
 	//> wsl-w-panel is shamelessly borrowered and modified from wordpress welcome-panel
 -->
 <div id="wsl-w-panel">
-	<a href="options-general.php?page=wordpress-social-login&wslp=<?php echo $wslp ?>&wsldwp=1" id="wsl-w-panel-dismiss"><?php _e("Dismiss", 'wordpress-social-login') ?></a>
+	<?php
+		// if new user or wsl updated, then we display wsl welcome panel
+		if( get_option( 'wsl_settings_welcome_panel_enabled' ) == wsl_version() ){ 
+		?>
+	<a href="options-general.php?page=wordpress-social-login&wslp=<?php echo $wslp; ?>&wsldwp=2" id="wsl-w-panel-dismiss"><?php  _e("Restore Welcome Panel", 'wordpress-social-login')?></a><br>
+		<?php
+		return;
+		}else{
+		?>
+	<a href="options-general.php?page=wordpress-social-login&wslp=<?php echo $wslp; ?>&wsldwp=1" id="wsl-w-panel-dismiss"><?php  _e("Dismiss", 'wordpress-social-login')?></a><br>
+		<?php
+		
+		}
+	?>
+	
 	
 	<table width="100%" border="0" style="margin:0;padding:0;">
 		<tr>

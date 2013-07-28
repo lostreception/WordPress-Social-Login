@@ -25,7 +25,9 @@ function wsl_component_networks()
 	include "wsl.components.networks.whyhello.php";
 	include "wsl.components.networks.basicinsights.php";
 
-	wsl_admin_welcome_panel();
+	$wslp = 'networks'; // temp fix lostreception
+	
+	wsl_admin_welcome_panel($wslp);
 ?>
 <form method="post" id="wsl_setup_form" action="options.php"> 
 	<?php settings_fields( 'wsl-settings-group' ); ?>
