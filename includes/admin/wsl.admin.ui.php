@@ -86,7 +86,7 @@ function wsl_admin_init()
 		wsl_admin_ui_header();
 
 		wsl_admin_ui_error();
-		}	
+	}	
 	
 	// HOOKABLE: 
 	do_action( "wsl_admin_init_end" );
